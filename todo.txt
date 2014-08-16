@@ -1,0 +1,4 @@
+- get test map in existance [x]
+- get sprite loaded and animated fully
+- add gravity
+- get skeleton of engine started--figure out how this works with map

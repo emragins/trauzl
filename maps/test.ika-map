@@ -1,0 +1,66 @@
+(ika-map 
+	(version '1.2')
+	(information 
+		(title '')
+		(meta )
+	)
+	(header 
+		(dimensions 
+			(width '320')
+			(height '240')
+		)
+		(tileset 'C:\\Users\\admin\\Desktop\\ss\\images\\filler.vsp')
+	)
+	(waypoints )
+	(zones )
+	(layers 
+		(layer 
+			(label 'New Layer')
+			(type 'tile')
+			(dimensions 
+				(width '20')
+				(height '15')
+			)
+			(position 
+				(x '0')
+				(y '0')
+			)
+			(parallax 
+				(mulx '1')
+				(muly '1')
+				(divx '1')
+				(divy '1')
+			)
+			(wrap 
+				(x 'false')
+				(y 'false')
+			)
+			(data 
+				(format 'zlib')
+				'eJxiYBgFjDhocs3ChtHlKDUPlx34zMFlHj5xUtyFbA82NaSYRa55pIQPqeYxATEzFc1jAWJWAm4mJfzwuYXU+MUH8MURNQA+8wAAAAD//w=='
+			)
+			(obstructions 
+				(style 'tile')
+				(format 'zlib')
+				'eJxiYCAeMEIAqhADGCJLMCIoqBiqJqgYnIaTjHAZRoQYA6YYknNwieH2A7prYJqgOmEWoXgZKgYAAAD//w=='
+			)
+			(entities 
+				(entity 
+					(label 'Player')
+					(x '20')
+					(y '160')
+					(sprite 'maps\\test.ika-sprite')
+					(speed '100')
+					(direction 'up')
+					(move_script 'PlayerMove')
+					(obstructs_entities 'true')
+					(obstructed_by_entities 'true')
+					(obstructed_by_map 'true')
+					(adj_activate_script '')
+					(activate_script 'PlayerScript')
+				)
+			)
+			(zones )
+		)
+	)
+)

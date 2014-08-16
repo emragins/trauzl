@@ -1,0 +1,27 @@
+ART LIST:
+
+HIGH PRIORITY:
+player sprite
+blocks
+a full tileset without doodads
+at least one enemy sprite
+spawning point (active)
+blocked off spawning (inactive)
+
+MEDIUM PRIORITY:
+generic in-game 'treasure' image
+other tilesets
+tileset doodads
+other enemy sprites
+in-game switches and doodads (details later)
+
+
+LOW PRIORITY:
+hp display border
+money display (icon for coin)
+border for text boxes
+overworld map(s)
+active spawning point animation
+animation for enemy spawning
+
+More to come...
