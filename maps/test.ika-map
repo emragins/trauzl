@@ -1,25 +1,25 @@
 (ika-map 
 	(version '1.2')
 	(information 
-		(title '')
+		(title 'Test')
 		(meta )
 	)
 	(header 
 		(dimensions 
-			(width '320')
-			(height '240')
+			(width '800')
+			(height '800')
 		)
-		(tileset 'C:\\Users\\admin\\Desktop\\ss\\images\\filler.vsp')
+		(tileset 'filler.vsp')
 	)
 	(waypoints )
 	(zones )
 	(layers 
 		(layer 
-			(label 'New Layer')
+			(label 'Walls')
 			(type 'tile')
 			(dimensions 
-				(width '20')
-				(height '15')
+				(width '50')
+				(height '50')
 			)
 			(position 
 				(x '0')
@@ -37,29 +37,14 @@
 			)
 			(data 
 				(format 'zlib')
-				'eJxiYBgFjDhocs3ChtHlKDUPlx34zMFlHj5xUtyFbA82NaSYRa55pIQPqeYxATEzFc1jAWJWAm4mJfzwuYXU+MUH8MURNQA+8wAAAAD//w=='
+				'eJzsWEkOwyAMTLr8/8vNpRdk4zF4wE09EqqIyCxAbSnHUfhnnMacoXU2Y5bTGpFA9LyaDM4oTVQ3mg/R03R7zy3O3nusHFG6yH4zzgM9b88dQX2uqiOetSN3n5HjcY1nh9frG/HHyPG6xtvpd9YD4/+h8TP8SxpsMGqLxLsa0TUyinM1WOe7ElpdQ9ZmyD7THzPk0HoK2hsZWSQv0b3G6qfoWWo+LT5WDumdiDu58iykfWzXWpjdd8kfoin5lnhHOEf2dgQafy+fh4/h2aM/6mtnBs1HO7e87T6LFlE1IwtmcvwqovqDdafRmr47S/TIkgXhtdbM5jiE30OZRyH6ju3CHTJ8UTly4U4ZsmVBvLD7oORD0kD7hOaTUWvb7+6a70y9W8LMd/csGVpk8lIoFAqFPPgAAAD//w=='
 			)
 			(obstructions 
 				(style 'tile')
 				(format 'zlib')
-				'eJxiYCAeMEIAqhADGCJLMCIoqBiqJqgYnIaTjHAZRoQYA6YYknNwieH2A7prYJqgOmEWoXgZKgYAAAD//w=='
+				'eJzsVdEOAyEIg///6WVTgdJ6umSPM9nuptYWqMzsh8PHuF56T6wPA8wDWCbjlREAJgAhkNUZYKR37oJvADZE01FzsF46Ysf9Yf9MkigVThyxRzglYKoMpbFDlSeXkXhMexMkky1gmZZ2qECAFFJhWS9Jqxm8Rq6tDHA32LcHuIPezltDKbmdtTDKXm5in6RLPJ/VvGSUKt13tgGKqnzIW6rIbZnJUhQPGZALjD6kLRxevKiSclp1rrybIqqejBNgETaiFEEmo6COozQN2fIcTs6+WaRdhNCj0TGWF/KjRSsXMRCCC81st+LngXZbL5T9JcdZVFpXlK1WFX/lzWluHkfM/GInUKmt1ttopZVTUPLvWXT9x6LSpmfO/7geLwAAAP//'
 			)
-			(entities 
-				(entity 
-					(label 'Player')
-					(x '20')
-					(y '160')
-					(sprite 'maps\\test.ika-sprite')
-					(speed '100')
-					(direction 'up')
-					(move_script 'PlayerMove')
-					(obstructs_entities 'true')
-					(obstructed_by_entities 'true')
-					(obstructed_by_map 'true')
-					(adj_activate_script '')
-					(activate_script 'PlayerScript')
-				)
-			)
+			(entities )
 			(zones )
 		)
 	)

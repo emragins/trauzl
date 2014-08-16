@@ -1,27 +1,32 @@
-ART LIST:
+ART LIST (Updated 10 NOV 2009):
 
 HIGH PRIORITY:
-player sprite
-blocks
-a full tileset without doodads
-at least one enemy sprite
-spawning point (active)
-blocked off spawning (inactive)
+player sprite - frames 32x32 each - just walking left/right and standing left/right
+blocks - 16x16 - standard, explosion... more to come later.
+	will need animation for explosion block - 48x48 with center being the center of the explosion.
+a full tileset without doodads - tiles 16x16 - NO slants and should essentially fill the whole tile
+at least one enemy sprite - size variable, make in multiples of 16 (ie: 16, 32, 48, etc.)
+	for initial enemy, basic basic and forth walking is plenty
+spawning point (active) - 32x32 
+	spawning point animation
+blocked off spawning (inactive) - 32x32
 
 MEDIUM PRIORITY:
-generic in-game 'treasure' image
-other tilesets
-tileset doodads
-other enemy sprites
-in-game switches and doodads (details later)
+generic in-game 'treasure' image fit in 16x16 image--does not have to fill it up
+other tilesets - again
+tileset doodads - multiples of 16, do not have to fill
+other enemy sprites - multiples of 16
+	details to come later
+in-game switches and doodads - multiples of 16, specifics of what's needed to come later
 
 
-LOW PRIORITY:
-hp display border
+LOW PRIORITY: - details to come later
+hp display 
 money display (icon for coin)
 border for text boxes
 overworld map(s)
 active spawning point animation
 animation for enemy spawning
+
 
 More to come...

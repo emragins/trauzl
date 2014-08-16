@@ -1,19 +1,11 @@
 
-from data import data
+from manager import manager
 import ika
-#data
-
 last_fps = 0
 
-def UpdateList():
-	for obj in data.objects:
-		obj.Update()
-	
-def RenderList():
-	ika.Render()	#map
-	
-	for obj in data.objects:
-		obj.Render()
+import fps
+#fpsManager = fps.FPSManager(60)
+
 
 
 def MainLoop():
@@ -26,14 +18,19 @@ def MainLoop():
 			global last_fps
 
 			if last_fps != ika.GetFrameRate():
-				ika.SetCaption( str("NEEDNAME    FPS(" + str(last_fps) + ")"))
+				ika.SetCaption( str("Trauzl    FPS(" + str(last_fps) + ")"))
 				last_fps = ika.GetFrameRate()
 
 			ika.Input.Update()
-			UpdateList()
+			manager.Update()
 			
 			last_update = ika.GetTime()+1
 			
-		RenderList()
+			
+		##will need to remove this when outputting map layer by layer in Manager	
+		ika.Render()	#map
+		#fpsManager.Render(manager.Render)		
+		manager.Render()
+		
 		
 		ika.Video.ShowPage()

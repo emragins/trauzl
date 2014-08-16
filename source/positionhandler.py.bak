@@ -1,0 +1,90 @@
+
+import collisions
+from data import configdata
+		
+class PositionHandler(object):
+	def __init__(self, parent):
+		self.parent = parent
+		self.moveSpeed = self.parent.GetMoveSpeed()
+		self.states = {
+			'MoveLeft': self.MoveLeft,
+			'MoveRight': self.MoveRight,
+			'Wait': self.Wait,
+			'Jump': self.Jump,
+			None: self.Wait
+			}
+		
+		self.vertNegativeSpeed = 1 #positive is down
+		self.gravityTimer = 0
+		self.gravityEffect = 2
+		
+	def Update(self):
+		state = self.states[self.parent.GetState()]
+		state()
+		for state in self.parent.extraStates:
+			self.states[state]()
+		self.ApplyGravity()	
+		
+	def Wait(self):
+		pass	
+	
+	def MoveLeft(self):
+		self.parent.x -= self.moveSpeed	
+		while collisions.CheckSolidCollisionsForMovement(self.parent):
+			self.parent.x += 1
+		
+	def MoveRight(self):
+		self.parent.x += self.moveSpeed
+		while collisions.CheckSolidCollisionsForMovement(self.parent):
+			self.parent.x -= 1
+	
+	def Jump(self):			
+		self.parent.y -= self.parent.GetJumpStrength()
+		collides = collisions.CheckSolidCollisionsForMovement(self.parent)
+				
+		if collides or not self.parent.IsFalling():
+			while collisions.CheckSolidCollisionsForMovement(self.parent):
+				self.parent.y += 1 #move down incrementally to get head out of ceiling
+			self.parent.RemoveState('Jump')
+			
+	
+	
+			
+	##MUST ADD STUFF TO DISTINGUISH BETWEEN WALLS AND OTHER ENTITIES... PROBABLY EASIEST TO DO WITH LAYERS
+	
+	def ApplyGravity(self):
+		self.parent.y += self.vertNegativeSpeed
+		collides = collisions.CheckSolidCollisionsForMovement(self.parent)
+		while collisions.CheckSolidCollisionsForMovement(self.parent):
+			self.parent.y -= 1 #move up incrementally to 'land' on the ground
+				
+		if not collides:
+			self.gravityTimer += 1
+			self.parent.StartFalling()
+			if self.gravityTimer >= 3: # and self.vertNegativeSpeed < 15:
+				self.vertNegativeSpeed += self.gravityEffect
+				self.gravityTimer = 0
+		else:
+			self.vertNegativeSpeed = 1
+			self.gravityTimer = 0
+			self.parent.StopFalling()
+			self.parent.RemoveState('Jump')  #needed here because otherwise char will bounce will lands due to order
+	
+	def GetOpenQuadrantsLeft(self): #return list of specific number of open quadrants/tiles	
+		pass
+		'''
+		pseudocode:
+		numQuadrants = int(self.height/configdata.tilesize)
+		list = []
+		for i in range(numQuadrants):
+			establish real x/y coordinates
+			establish tile x/y coordinates
+			establish if tile is obstructed
+			if tile obstructed:
+				list.append(i) #note: want the quadrant, NOT the real or tile x/y
+		
+		return list	
+		'''
+		
+		
+		

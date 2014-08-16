@@ -1,0 +1,76 @@
+import entity
+import positionhandler
+import sprite
+
+class MovingEntity(entity.Entity):
+	def __init__(self, x, y, type, direction = "right"):
+		entity.Entity.__init__(self, x, y, type)
+		self.posHandler = positionhandler.PositionHandler(self)
+		self.sprite = sprite.MakeSprite(self, type)
+		
+		
+		
+		self.currentState = 'Wait'
+		self.direction = direction #used to determine actions such as 'make block' or 'attack'
+			#updates with 'left' or 'right' movement
+		self.extraStates = []
+		self.falling = False
+		
+	def Update(self):
+		#print self ##
+		#print 'hotspots', self.realX + self.hotX, self.realY + self.hotY ##
+		self.posHandler.Update()
+		entity.Entity.Update(self)
+		self.sprite.Update()
+		
+		
+	def Render(self):
+		self.sprite.Render()
+	
+	def GetPosition(self):
+		return self.realX, self.realY	
+	
+	"""	
+	Possible States:
+	MoveLeft
+	MoveRight
+	Wait | WaitLeft, WaitRight - for sprite ONLY
+	Jump | JumpLeft, JumpRight - for sprite ONLY
+	"""
+	
+	def SetState(self, state):
+		if self.currentState is state:
+			pass
+		else:
+			self.currentState = state
+			self.SetDirectionFromState(state)
+	def GetState(self):
+		return self.currentState
+	
+	def AddState(self, state):
+		if not state in self.extraStates:
+			self.extraStates.append(state)
+	def RemoveState(self, state):
+		if state in	self.extraStates: #(for error checking)
+			self.extraStates.remove(state)
+			
+	def SetDirectionFromState(self, state):
+		##should be able to make this better
+		if self.direction in state:
+			return
+		elif 'Right' in state:
+			self.direction = 'Right'
+		elif 'Left' in state:
+			self.direction = 'Left'
+		else:
+			pass
+	#should probably be only in normal Entity (despite it being movement.. it is stat based)
+	def GetJumpStrength(self):
+		return self.stats.jumpStrength
+	
+	def StopFalling(self):
+		self.falling = False
+	def StartFalling(self):
+		self.falling = True
+	def IsFalling(self):
+		return self.falling

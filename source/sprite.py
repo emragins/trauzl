@@ -6,146 +6,123 @@ Initial Backbone of code written by SDHawk... though heavily altered
 Visual representation of an entity. Contains animation and walk scripts to control its apperance.
 """
 
-#from animationscript import AnimationScript
-#from movescript import MoveScript
 import ika
-#import engine
 #from collision import *
 import utility
-import frames
+import animationdata
+import imagedata
+import box
 
-class Sprite:
-	
-	
-	Scale = 0
-	Rotation = 0
-	SpriteCollisions = 0
-	TileCollisions = 0
-	Alpha = 255
-	
-	x = 0
-	y = 0
-	HotX =0
-	HotY = 0
-	HotW = 16
-	HotH = 16
-	Width = 32
-	Height = 32
-	Map = 1
-	
-	Animations =   { 
-					
-					"Down_Walk" : "z6 w8 z7 w8 z8 w8 z7 w8 /0",
-					"Up_Walk" : "z9 w8 z10 w8 z11 w8 z10 w8 /0",
-					"Right_Walk" : "z3 w8 z4 w8 z5 w8 z4 w8 /0",
-					"Left_Walk" : "z0 w8 z1 w8 z2 w8 z1 w8 /0",
-						
-					"Up_Stand" : "z10",
-					"Down_Stand" : "z7",
-					"Left_Stand" : "z1",
-					"Right_Stand" : "z4",
-						
-					"Up_Attack" : "z1 w4 z2 w4 z3 w4 z0 w4",
-					"Down_Attack" : "z3 w2 z0 w2 z1 w2 z2 w2",
-					"Left_Attack" : "z0 w2 z1 w2 z2 w2 z3 w2",
-					"Right_Attack" : "z2 w2 z3 w2 z0 w2 z1 w2",
-
-					"Up_Hurt" : "rgba255,255,255,255,255,0,0,100,35 w3 rgba255,0,0,100,255,255,255,255,35 w3 /2",
-					"Down_Hurt" : "rgba255,255,255,255,255,0,0,100,35 w3 rgba255,0,0,100,255,255,255,255,35 w3 /2",
-					"Left_Hurt" : "rgba255,255,255,255,255,0,0,100,35 w3 rgba255,0,0,100,255,255,255,255,35 w3 /2",
-					"Right_Hurt" : "rgba255,255,255,255,255,0,0,100,35 w3 rgba255,0,0,100,255,255,255,255,35 w3 /2",
-						
-					"Up_Dead" : "rgba255,255,255,255,0,0,0,0,5 w4",
-					"Down_Dead" : "rgba255,255,255,255,0,0,0,0,5 w4",
-					"Left_Dead" : "rgba255,255,255,255,0,0,0,0,5 w4",
-					"Right_Dead" : "rgba255,255,255,255,0,0,0,0,5 w4"
-
-				}
-	
-	def __init__(self, parent):
-	
-		self.parent = parent
-		
-		frames = {} # Contains the sprite images. Note: Later iterations should store all 
+def MakeSprite(parent, type):	
+	'''
+	frames = {} # Contains the sprite images. Note: Later iterations should store all 
 			#sprite data in a single container for reference, as opposed to having multiple 
 			#copies of every sprite floating around.
-		self.currentFrame = 0 #Current displayed image
-		self.layer = 0
-		self.animationSpeed = 1
-		
-		'''
-		self.MoveScript = MoveScript(self)
-		self.AnimationScript = AnimationScript(self)	
-		self.MoveScript.PixelMovement = 0
-		'''
-
-		#Note: later add a fancy multi-frame loader.
-		#self.frames.append(ika.Image("art\knight.png"))
-		#self.frames.append(ika.Image("art\knight2.png"))
-		#self.frames.append(ika.Image("art\knight3.png"))
-		
-		#self.frames = frames.LoadFrames(212,22,"art\knight.png",20,36,3,0,4,12)+frames.LoadFrames(290,21,"art\knight.png",20,36,3,0,4,8)+frames.LoadFrames(334,101,"art\knight.png",28,36,3,0,4,1)+frames.LoadFrames(290,144,"art\knight.png",20,36,3,0,4,2)+frames.LoadFrames(333,144,"art\knight.png",30,36,3,0,4,2)
-		
-		#self.frames = frames.LoadFrames(0,0,"images\urgan.png",16,16,1,0,0,4)
-		self.frames = frames.LoadFrames(0,0,"images\\hero.png",32,32,3,0,0,12)
-		
-		#self.frames.append(  )
-		
-	def LoadSprite(self, sprite):
-		
-		self.frames = frames.LoadFrames(0,0,sprite,16,16,1,0,0,4)
-		
-	def LoadSpriteXL(self, sprite):
-		
-		self.frames = frames.LoadFrames(0,0,sprite,32,32,1,0,0,4)		
+			
+			Second thought... IF I were to make blanket sprite copies:
+				-x/y okay, because not controlled by sprite
+				-but would need to have different parents, hence, need different copies of sprites.
+				-Also, would not want every sprite of each type to be in the same frame of animation.
 	
-	Color = ika.RGB(255,255,255,255)
+			However: I *think*, presently, that new dicts are created each time a sprite is made, and those should be shared
+				because they do not change.
+	'''
+	
+	image = imagedata.GetImageData(type) 
+	#GiveImageDataToParent(parent, image)
+	
+	sprite = Sprite(parent, image['frames'], image['animations'])
+	
+	return sprite
+	
+	
+class Sprite:	
+	def __init__(self, parent, frames, animations):
+	
+		self.parent = parent
+		self.animations = animations
+		self.currentAnimation = None
+		self.frames = frames
+		self.currentFrame = 0 #Current displayed image
+		#self.layer = 0
+		self.animationSpeed = 3
+		self.currentLabel = 'WaitLeft'
+		self.animationTimer = 0
+		self.currentScriptFrame = 0
+		self.map = True
+		
+	Color = ika.RGB(255,255,255,255) ##
 	
 	def Render(self):
 		#Draws the sprite. 
 		#Note: Add future optimizations to only draw it if it's in viewing distance.
-		if self.Map:
-			xy = utility.MapToScreen([self.parent.x, self.parent.y])
+		if self.map:
+			x, y = utility.MapToScreen(self.parent.realX, self.parent.realY)
 		else:
-			xy = [self.parent.x,self.parent.y]
+			x, y = self.parent.realX, self.parent.realY
 		
 		#if Alpha == 255:
 		#	self.frames[self.currentFrame].Blit(xy[0], xy[1])
 		#else:
-		ika.Video.TintBlit(self.frames[self.currentFrame], xy[0], xy[1], self.Color)
+		ika.Video.TintBlit(self.frames[self.currentFrame], x, y, self.Color)
 		
 	def Update(self):
-		#Processess animation
-		dir = self.parent.direction
 		
-		if dir is 'left':
-			pass
-			
-		elif dir is 'right':
-			pass
-			
+		#determine which animation
+		"""
+		use the last animation given in extraStates, if it exists
+		scenario: 
+		player walks, set state
+		player jumps, extra state
+		player attacks, extra state 2 - this should be displayed
+		"""
+		extraStatesLen = len(self.parent.extraStates)
+		if extraStatesLen != 0:
+			newLabel = self.parent.extraStates[extraStatesLen-1]
 		else:
-			pass
+			newLabel = self.parent.GetState()
 		
-		'''
-		self.MoveScript.Update()
-		self.AnimationScript.Update()
-		'''
-	'''	
-	def CheckLadder(self):
-		
-		CurTileX = self.parent.x/ika.Map.tilewidth
-		CurTileY = self.parent.y/ika.Map.tileheight
-		
-		for Layer in range(0,4):
-			OnTile = ika.Map.GetTile(CurTileX, CurTileY, Layer)
-			OnObs = engine.GetObs(OnTile)
+		#Processess which animation
+		if newLabel is not self.currentLabel and not newLabel in self.currentLabel:
+			self.LabelChanged(newLabel)
+			self.currentFrame = self.GetNextFrame()
 			
-			if OnObs is not None and OnObs.Ladder:
-				return 1
-				
-		return 0
-	'''		
+		#update animation
+		if self.animationTimer < self.animationSpeed:
+			self.animationTimer += 1
+		else:
+			self.animationTimer = 0
+			self.currentFrame = self.GetNextFrame()
+	
+	def LabelChanged(self, newLabel):
+		self.animationTimer = 0
+		if not newLabel in self.animations:
+			if newLabel == 'Wait':
+				if 'Left' in self.currentLabel:
+					newLabel = 'WaitLeft'
+				else:
+					newLabel = 'WaitRight'
+			elif newLabel == 'Jump':
+				if 'Left' in self.currentLabel:
+					newLabel = 'JumpLeft'
+				else:
+					newLabel = 'JumpRight'
+			else:
+				newLabel = self.currentLabel ##won't throw an error, but won't crash game
+		self.currentLabel = newLabel
+		
+	def GetNextFrame(self):
+		currentAnimationList = self.animations[self.currentLabel]
+		if self.currentScriptFrame >= len(currentAnimationList) - 1:
+			self.currentScriptFrame = 0
+		else:
+			self.currentScriptFrame += 1
+		
+		#gives int representing which frame in self.frames to use
+		frame = currentAnimationList[self.currentScriptFrame] 
+		
+		return frame
+	
 	'''	
 	def CheckTileCollision(self, x, y, treasure=0):
 		#NOTE: Add a case for if the map isn't the active map.
@@ -169,24 +146,24 @@ class Sprite:
 		
 		for Layer in range(0,6):
 		
-			CurTileX = self.parent.x/ika.Map.tilewidth
-			CurTileY = self.parent.y/ika.Map.tileheight
+			CurTileX = self.parent.realX/ika.Map.tilewidth
+			CurTileY = self.parent.realY/ika.Map.tileheight
 			
 			OnTile = ika.Map.GetTile(CurTileX, CurTileY, Layer)
 			
-			if x > self.parent.x: #Going right
+			if x > self.parent.realX: #Going right
 				OffTile = ika.Map.GetTile(CurTileX+1, CurTileY, Layer)
 				NextTileX = CurTileX+1
 				NextTileY = CurTileY
-			elif x < self.parent.x: #Going left
+			elif x < self.parent.realX: #Going left
 				OffTile = ika.Map.GetTile(CurTileX-1, CurTileY, Layer)
 				NextTileX = CurTileX-1
 				NextTileY = CurTileY			
-			elif y > self.parent.y: #going down
+			elif y > self.parent.realY: #going down
 				OffTile = ika.Map.GetTile(CurTileX, CurTileY+1, Layer)
 				NextTileX = CurTileX
 				NextTileY = CurTileY+1
-			elif y < self.parent.y: #going up
+			elif y < self.parent.realY: #going up
 				OffTile = ika.Map.GetTile(CurTileX, CurTileY-1, Layer)
 				NextTileX = CurTileX
 				NextTileY = CurTileY-1
@@ -248,10 +225,10 @@ class Sprite:
 		#else:
 		#	return 0
 	'''
-	
+	'''
 	def IsInArea(self,x,y,w,h):	
 		
-		ThisEntity = Box(self.parent.x+self.HotX, self.parent.y+self.HotY, self.HotW, self.HotH)
+		ThisEntity = Box(self.parent.realX+self.HotX, self.parent.realY+self.HotY, self.HotW, self.HotH)
 		
 		if ThisEntity.CollidesWith(Box(x,y,w,h)):
 			return 1
@@ -260,15 +237,16 @@ class Sprite:
 		
 	def IsInAreaNoHotSpots(self,x,y,w,h):	
 		
-		ThisEntity = Box(self.parent.x, self.parent.y, self.Width, self.Height)
+		ThisEntity = Box(self.parent.realX, self.parent.realY, self.Width, self.Height)
 		OtherEntity = Box(x,y,w,h)
 		
-		#print "["+str(self.parent.x)+"-"+str(self.parent.y)+"-"+str(self.Width)+"-"+str(self.Height)+"]---"+"["+str(x)+"-"+str(y)+"-"+str(w)+"-"+str(h)+"]"
+		#print "["+str(self.parent.realX)+"-"+str(self.parent.realY)+"-"+str(self.Width)+"-"+str(self.Height)+"]---"+"["+str(x)+"-"+str(y)+"-"+str(w)+"-"+str(h)+"]"
 		
 		if OtherEntity.CollidesWith(ThisEntity):
 			return 1
 			
 		return 0
+	'''
 	'''	
 	def CheckCustomCollision(self, x, y, w, h):
 	
@@ -312,6 +290,7 @@ class Sprite:
 			
 			return 0
 	'''
+	'''
 class BuildingSprite(Sprite):
 	
 	def __init__(self, parent, image, w, h, hx, hy, hw, hh):
@@ -341,3 +320,5 @@ class BuildingSprite(Sprite):
 						"Left_Stand" : "z0 /0",
 						"Right_Stand" : "z0 /0",
 					}		
+	'''
+	
